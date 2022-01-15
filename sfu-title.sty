@@ -1,0 +1,223 @@
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{sfu-title}[2014/09/16 Siberian Federal University standart titlings]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% Титульник %%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Предваряю дату городом
+\RequirePackage{datetime2}
+%% Определяю вид титульника
+\RequirePackage{titling}
+\RequirePackage{chngpage}
+\RequirePackage{setspace}
+%%%% Определяю общие макросы и соответствующие команды. 
+%%%% Решил не обнулять после использования \maketitle, как поступает article.cls с \@authors %% Ещё бы (добавлено спустя полгода)
+%% Идут в \@head
+\def\institute#1{\gdef\@institute{#1}}% Команда, определяющая макрос
+\def\@institute{\@latex@warning@no@line{No \noexpand\institute given}}% Собственно макрос
+
+\def\chair#1{\gdef\@chair{#1}}
+\def\@chair{\@latex@warning@no@line{No \noexpand\chair given}}
+
+%% Идёт в \@neck
+\def\chairHolder#1{\gdef\@chairHolder{#1}}
+\def\@chairHolder{\@latex@warning@no@line{No \noexpand\chairHolder given}}
+
+%% Идут в \@chest
+\def\school#1{\gdef\@school{{\small#1}}}
+\def\@school{\@latex@warning@no@line{No \noexpand\school given}}
+
+\def\program#1{\gdef\@program{{\small#1}}}
+\def\@program{\@latex@warning@no@line{No \noexpand\program given}}
+
+%% Идут в \@belly
+\def\supervisor#1{\gdef\@supervisor{#1}}
+\def\@supervisor{\@latex@warning@no@line{No \noexpand\supervisor given}}
+\def\supervisorDegree#1{\gdef\@supervisorDegree{#1}}
+\def\@supervisorDegree{\@latex@warning@no@line{No \noexpand\supervisorDegree given}}
+\def\supervisorPossition#1{\gdef\@supervisorPossition{#1}}
+\def\@supervisorPossition{\@latex@warning@no@line{No \noexpand\supervisorPossition given}}
+
+\def\reviewer#1{\gdef\@reviewer{#1}}
+\def\@reviewer{\@latex@warning@no@line{No \noexpand\reviewer given}}
+\def\reviewerDegree#1{\gdef\@reviewerDegree{#1}}
+\def\@reviewerDegree{\@latex@warning@no@line{No \noexpand\reviewerDegree given}}
+\def\reviewerPossition#1{\gdef\@reviewerPossition{#1}}
+\def\@reviewerPossition{\@latex@warning@no@line{No \noexpand\reviewerPossition given}}
+
+\def\group#1{\gdef\@group{#1}}
+\def\@group{\@latex@warning@no@line{No \noexpand\group given}}
+
+\def\recordID#1{\gdef\@recordID{#1}}
+\def\@recordID{\@latex@warning@no@line{No \noexpand\recordID given}}
+
+%%%% Определяю часть макросов, составляющих титульник. Остальные под опциями.
+\def\@head{%
+	Федеральное государственное автономное \\ 
+	образовательное учреждение \\ 
+	высшего профессионального образования\\ 
+	<<СИБИРСКИЙ ФЕДЕРАЛЬНЫЙ УНИВЕРСИТЕТ>>\\[1.5ex] 
+	\@institute\\ \@chair \\ [5ex]%[30pt]
+}
+\def\@neck{~\\[14ex]}
+\def\@bottom{Красноярск \the\year}
+
+%%%% Общий вид титульника
+\renewcommand{\maketitle}{
+	\begin{titlingpage}
+		\newlength{\addtoeven}
+		\newlength{\addtoodd}
+		\calccentering{\addtoeven}{\evensidemargin}
+		\calccentering{\addtoodd}{\oddsidemargin}
+		\changetext{}{}{\addtoeven}{\addtoodd}{}
+		\begin{center}
+			\begin{singlespace} 
+			\@head 
+			\@neck 
+			\@chest 
+			\@belly 
+			\vfill
+			\@bottom
+			\end{singlespace}  
+		\end{center}
+	\end{titlingpage}
+    \addtocounter{page}{1}%
+}
+%%%% Специальные опции
+\DeclareOption{coursework}{%
+	\def\@chest{
+		\textbf{\large КУРСОВАЯ РАБОТА \\[1.5ex]}
+		\normalsize \@title \\[29ex] 
+	}
+	\def\@belly{
+		\begin{flushleft}
+			\begin{tabular}{p{.2\linewidth}p{.3\linewidth}p{.2\linewidth}p{.3\linewidth}}
+				\multicolumn{2}{l}{Руководитель} & \rule{\linewidth}{.5pt} & \@supervisor	\\
+				Студент & \@group, \@recordID 	 & \rule{\linewidth}{.5pt} & \@author		\\ %[20ex]
+			\end{tabular}
+		\end{flushleft}
+	}
+}
+\DeclareOption{practice}{%
+	\def\organisation#1{\gdef\@organisation{#1}}
+	\def\@organisation{\@latex@warning@no@line{No \noexpand\organisation given}}
+	\def\supervisorUni#1{\gdef\@supervisorUni{#1}}
+	\def\@supervisorUni{\@latex@warning@no@line{No \noexpand\supervisorUni given}}
+	\def\supervisorOrg#1{\gdef\@supervisorOrg{#1}}
+	\def\@supervisorOrg{\@latex@warning@no@line{No \noexpand\supervisorOrg given}}
+
+	\def\@chest{
+		\textbf{\large ОТЧЁТ О ПРАКТИКЕ \\[1.5ex]}
+		\normalsize \@organisation	\\[1.5ex]
+					 \@title 		\\[23ex]
+	}
+	\def\@belly{
+		\begin{flushleft}
+			\begin{tabular}{p{.2\linewidth}p{.3\linewidth}p{.2\linewidth}p{.3\linewidth}}
+				\multicolumn{2}{l}{Руководитель от университета} & \rule{\linewidth}{.5pt} & \@supervisorUni \\
+				\multicolumn{2}{l}{Руководитель от предприятия}  & \rule{\linewidth}{.5pt} & \@supervisorOrg \\
+				Студент & \@group, \@recordID					 & \rule{\linewidth}{.5pt} & \@author 		 \\ %[20ex]
+			\end{tabular}
+		\end{flushleft}
+	}
+}
+\DeclareOption{lab}{%
+	\def\@chest{
+		\textbf{\large ОТЧЁТ О ЛАБОРАТОРНОЙ РАБОТЕ \\[1.5ex]}
+				\normalsize \@title \\[29ex] 
+	}
+	\def\@belly{
+		\begin{flushleft}
+			\begin{tabular}{p{.5\linewidth}p{.2\linewidth}p{.3\linewidth}}
+				Преподаватель 	& \rule{\linewidth}{.5pt} & \@supervisor 	\\
+				Студент 		& \rule{\linewidth}{.5pt} & \@author 		\\ %[20ex]
+			\end{tabular}
+		\end{flushleft}
+	}
+}
+\DeclareOption{diploma}{%
+	\def\@neck{
+		\begin{flushright}
+		\begin{minipage}{.39\textwidth}
+			УТВЕРЖДАЮ \\
+			Заведующий кафедрой \\
+			\begin{tabular}{p{.2\linewidth}p{.25\linewidth}p{.2\linewidth}}
+			\rule{\linewidth}{.5pt}			& \multicolumn{2}{l}{\@chairHolder}	\\
+			<<\rule{.7\linewidth}{.5pt}>>	& \rule{\linewidth}{.5pt} & 20\rule{.3\linewidth}{.5pt}~г. \\ [6ex]
+			\end{tabular}
+		\end{minipage}
+		\end{flushright}
+	}
+	\def\@chest{
+		\textbf{\large ДИПЛОМНАЯ РАБОТА \\[1.5ex]}
+		{\normalsize \@program	\\ [1.5ex]  
+					 \@title 	\\ [23ex]}
+	}
+	\def\@belly{
+		\begin{flushleft}
+			\begin{tabular}{p{.30\linewidth}p{.18\linewidth}p{.28\linewidth}p{.25\linewidth}}
+				Научный руководитель & \rule{\linewidth}{.5pt} & \@supervisorPossition, \@supervisorDegree  & \@supervisor \\
+				Выпускник			 & \rule{\linewidth}{.5pt} & 											& \@author \\ 
+				Рецензент			 & \rule{\linewidth}{.5pt} & \@reviewerPossition, \@reviewerDegree 		& \@reviewer \\ %[20ex] 
+			\end{tabular}
+		\end{flushleft}
+	}
+}
+\DeclareOption{bsthesis}{%
+	\def\@neck{
+		\begin{flushright}
+		\begin{minipage}{.39\textwidth}
+			УТВЕРЖДАЮ \\
+			Заведующий кафедрой \\
+			\begin{tabular}{p{.2\linewidth}p{.25\linewidth}p{.2\linewidth}}
+			\rule{\linewidth}{.5pt}			& \multicolumn{2}{l}{\@chairHolder}	\\
+			<<\rule{.7\linewidth}{.5pt}>>	& \rule{\linewidth}{.5pt} & 20\rule{.3\linewidth}{.5pt}~г. \\ [6ex]
+			\end{tabular}
+		\end{minipage}
+		\end{flushright}
+	}
+	\def\@chest{
+		\textbf{\large БАКАЛАВРСКАЯ РАБОТА \\[1.5ex]}
+		{\normalsize \@program	\\ [1.5ex]  
+					 \@title 	\\ [23ex]}
+	}
+	\def\@belly{
+		\begin{flushleft}
+			\begin{tabular}{p{.30\linewidth}p{.18\linewidth}p{.28\linewidth}p{.25\linewidth}}
+				Научный руководитель & \rule{\linewidth}{.5pt} & \@supervisorPossition, \@supervisorDegree  & \@supervisor \\
+				Выпускник			 & \rule{\linewidth}{.5pt} & 											& \@author \\ %[20ex] 
+			\end{tabular}
+		\end{flushleft}
+	}
+}
+\DeclareOption{msthesis}{%
+	\def\@neck{
+		\begin{flushright}
+		\begin{minipage}{.39\textwidth}
+			УТВЕРЖДАЮ \\
+			Заведующий кафедрой \\
+			\begin{tabular}{p{.2\linewidth}p{.25\linewidth}p{.2\linewidth}}
+			\rule{\linewidth}{.5pt}			& \multicolumn{2}{l}{\@chairHolder}	\\
+			<<\rule{.7\linewidth}{.5pt}>>	& \rule{\linewidth}{.5pt} & 20\rule{.3\linewidth}{.5pt}~г. \\ [6ex]
+			\end{tabular}
+		\end{minipage}
+		\end{flushright}
+	}
+	\def\@chest{
+		\textbf{\large МАГИСТЕРСКАЯ ДИССЕРТАЦИЯ \\ [1.5ex]}
+		\normalsize \@title 	\\ [1.5ex]
+					\@school	\\ [1.5ex]
+					\@program 	\\ [20ex] 
+	}
+	\def\@belly{
+		\begin{flushleft}
+			\begin{tabular}{p{.30\linewidth}p{.18\linewidth}p{.28\linewidth}p{.25\linewidth}}
+				Научный руководитель & \rule{\linewidth}{.5pt} & \@supervisorPossition, \@supervisorDegree  & \@supervisor \\
+				Выпускник			 & \rule{\linewidth}{.5pt} & 											& \@author \\ 
+				Рецензент			 & \rule{\linewidth}{.5pt} & \@reviewerPossition, \@reviewerDegree 		& \@reviewer \\ %[20ex] 
+			\end{tabular}
+		\end{flushleft}
+	}
+}
+\ExecuteOptions{coursework}
+\ProcessOptions\relax
